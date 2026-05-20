@@ -664,6 +664,144 @@ describe("MeetMyAgentError instanceof", () => {
 
 // ── Defensive: errorBody parsing handles arrays and non-objects ──
 
+describe("success-path JSON parse safety", () => {
+  it("wraps SyntaxError from success-path response.json() into MeetMyAgentError", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: () => Promise.reject(new SyntaxError("Unexpected end of JSON input")),
+      headers: new Headers(),
+    } as Response);
+
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.getProfile()).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 200,
+      code: "INVALID_RESPONSE",
+      message: "Response could not be parsed as JSON",
+    });
+  });
+});
+
+describe("pagination cursors", () => {
+  it("passes cursor to searchJobs query string", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ jobs: [{ id: "j2" }], nextCursor: "page3" })
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await client.searchJobs({ cursor: "page2-cursor-xyz", limit: 10 });
+    const [url] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain("cursor=page2-cursor-xyz");
+    expect(url).toContain("limit=10");
+  });
+
+  it("passes cursor to searchAgents query string", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ results: [], type: "profiles", nextCursor: null })
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await client.searchAgents("ai", { cursor: "agents-page2", limit: 5 });
+    const [url] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain("cursor=agents-page2");
+    expect(url).toContain("limit=5");
+  });
+});
+
+describe("write methods error paths", () => {
+  it("throws 422 MeetMyAgentError on updateProfile validation failure", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "validation_failed", message: "displayName too long" }, 422)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.updateProfile({ displayName: "x".repeat(500) })).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 422,
+      code: "validation_failed",
+    });
+  });
+
+  it("throws 404 MeetMyAgentError when job no longer exists (bidOnJob)", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "not_found", message: "Job no longer accepting bids" }, 404)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.bidOnJob("deleted-job-id", { amount: 100 })).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 404,
+      code: "not_found",
+    });
+  });
+
+  it("throws 403 when account is unclaimed (rotateKey)", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "account_unclaimed", message: "Claim account before rotating key" }, 403)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.rotateKey()).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 403,
+      code: "account_unclaimed",
+    });
+  });
+
+  it("throws 404 when recipientId does not exist (sendMessage)", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "recipient_not_found" }, 404)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.sendMessage("user-does-not-exist", "hi")).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 404,
+    });
+  });
+});
+
+describe("read methods error paths", () => {
+  it("throws 401 after key rotation (getStatus)", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "invalid_api_key", message: "API key has been rotated" }, 401)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_stale_key" });
+    await expect(client.getStatus()).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 401,
+    });
+  });
+
+  it("throws 500 on server error (getMessages)", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "internal_server_error" }, 500)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.getMessages()).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 500,
+    });
+  });
+
+  it("throws 429 with rate-limit body (getProfile)", async () => {
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "rate_limited", message: "Too many requests", retry_after: 60 }, 429)
+    );
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await expect(client.getProfile()).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 429,
+      details: expect.objectContaining({ retry_after: 60 }),
+    });
+  });
+});
+
+describe("default limits", () => {
+  it("defaults getMessages to limit=30", async () => {
+    mockFetch.mockResolvedValueOnce(mockResponse({ conversations: [] }));
+    const client = new MeetMyAgentClient({ apiKey: "mma_test" });
+    await client.getMessages();
+    const [url] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain("limit=30");
+  });
+});
+
 describe("error response edge cases", () => {
   it("handles non-object JSON error body (array) without crashing", async () => {
     mockFetch.mockResolvedValueOnce(mockResponse(["unexpected", "array"], 500));

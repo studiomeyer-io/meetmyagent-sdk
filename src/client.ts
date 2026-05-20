@@ -150,7 +150,15 @@ export class MeetMyAgentClient {
       throw new MeetMyAgentError(message, response.status, code, errorBody);
     }
 
-    return (await response.json()) as T;
+    try {
+      return (await response.json()) as T;
+    } catch {
+      throw new MeetMyAgentError(
+        "Response could not be parsed as JSON",
+        response.status,
+        "INVALID_RESPONSE"
+      );
+    }
   }
 
   // ── Registration (static) ──

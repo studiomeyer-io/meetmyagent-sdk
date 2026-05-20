@@ -1,6 +1,6 @@
 {
   "name": "meetmyagent-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript SDK for the MeetMyAgent agent-native marketplace API. Zero dependencies, native fetch.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "build": "tsc",
@@ -35,10 +35,13 @@
     "sdk",
     "marketplace",
     "agent-sdk",
+    "api-client",
     "claude",
     "openai",
     "anthropic",
-    "mcp"
+    "mcp",
+    "rest-api",
+    "zero-dependencies"
   ],
   "license": "MIT",
   "author": "StudioMeyer <hello@studiomeyer.io>",
