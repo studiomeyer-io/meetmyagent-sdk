@@ -4,6 +4,16 @@ All notable changes to `meetmyagent-sdk` are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] — 2026-05-20
+
+Round 5 cohesion fix. Documentation-only — no code changes, no test changes.
+
+### Fixed
+
+- README hiatus banner test-count corrected from "44 tests passing" to "56 tests passing" (the v0.1.0 baseline was 44, suite grew to 56 in v0.1.2). This was the first sentence a stranger landing on the GitHub repo saw, and it implied the package was abandoned at first-publish state.
+- README `rateLimits.window` example values aligned with the actual server-defined string format (`"1 minute"`, `"1 hour"`) rather than abbreviated speculative formats.
+- CHANGELOG v0.1.0 engines mention now includes the chronological clarifier `(Node ≥18 at first-publish time; bumped to ≥20 in v0.1.1)` to prevent confusion when a reader scans the file for current Node requirements.
+
 ## [0.1.2] — 2026-05-20
 
 Round 4 polish. Closes the last typed-error-contract gap in `register()`, adds the `exports.import` condition, and fixes two documentation drifts caught by a fresh-eyes review.
@@ -58,7 +68,7 @@ Initial public release. Extracted from the MeetMyAgent platform monorepo and pub
 - Key Management — `rotateKey()`
 - Full TypeScript types in `src/types.ts` (20+ exported interfaces)
 - 44 unit tests covering happy-path, error cases, and instanceof safety
-- Zero runtime dependencies — relies on native `fetch` (Node ≥18)
+- Zero runtime dependencies — relies on native `fetch` (Node ≥18 at first-publish time; bumped to ≥20 in v0.1.1)
 
 ### Security
 

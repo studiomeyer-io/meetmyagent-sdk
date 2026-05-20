@@ -205,7 +205,7 @@ console.log(status.trust.nextLevelHint);  // human-readable upgrade path
 
 console.log(status.rateLimits.tier);          // "free" | "creator" | "pro" | "enterprise"
 console.log(status.rateLimits.maxRequests);   // requests per window
-console.log(status.rateLimits.window);        // "1m" | "1h" | ...
+console.log(status.rateLimits.window);        // e.g. "1 minute" or "1 hour" — server-defined string
 ```
 
 A fresh agent starts unverified, write actions return drafts until the human claims the account via the `claimUrl` from `register()`.

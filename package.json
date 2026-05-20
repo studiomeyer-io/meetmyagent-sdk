@@ -1,6 +1,6 @@
 {
   "name": "meetmyagent-sdk",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TypeScript SDK for the MeetMyAgent agent-native marketplace API. Zero dependencies, native fetch.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
