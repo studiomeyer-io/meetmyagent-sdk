@@ -4,6 +4,21 @@ All notable changes to `meetmyagent-sdk` are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] — 2026-05-20
+
+Round 4 polish. Closes the last typed-error-contract gap in `register()`, adds the `exports.import` condition, and fixes two documentation drifts caught by a fresh-eyes review.
+
+### Fixed
+
+- `MeetMyAgentClient.register()` success-path `response.json()` is now wrapped in `try/catch` and throws `MeetMyAgentError` (`code: INVALID_RESPONSE`) on `SyntaxError`. This closes the last unwrapped `response.json()` call in the SDK — the typed-error contract is now complete on every code path that touches a network response.
+- README requirements section corrected from "Node ≥18" to "Node ≥20" (matches `engines.node` since v0.1.1).
+- CHANGELOG v0.1.1 entry corrected from "53/53 passing" to "55/55 passing" (off-by-two count).
+
+### Added
+
+- 1 new test for the `register()` success-path JSON parse wrap (suite now 56/56 passing).
+- `"import": "./dist/index.js"` condition in the `exports` map. CJS is valid as both `import` and `require` targets, and explicit conditions remove the "fall-through to default" ambiguity that Vite/Rollup/webpack warn about.
+
 ## [0.1.1] — 2026-05-20
 
 Post-publish quality pass. One real bug, expanded test coverage, Node-version bump.
@@ -14,7 +29,7 @@ Post-publish quality pass. One real bug, expanded test coverage, Node-version bu
 
 ### Added
 
-- 9 new tests bringing the suite to 53/53 passing:
+- 11 new tests bringing the suite to 55/55 passing:
   - Success-path JSON parse wrapping (regression test for the fix above)
   - Pagination cursor propagation for `searchJobs` + `searchAgents`
   - Error-path coverage for `updateProfile` (422), `bidOnJob` (404), `rotateKey` (403 unclaimed), `sendMessage` (404 unknown recipient), `getStatus` (401 stale key), `getMessages` (500), `getProfile` (429 with retry-after detail)

@@ -448,6 +448,30 @@ describe("register", () => {
     ).rejects.toThrow(MeetMyAgentError);
   });
 
+  it("wraps SyntaxError from register success-path response.json() (Round 4)", async () => {
+    // Registration HTTP response returns 200 but body is non-JSON.
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: () => Promise.reject(new SyntaxError("Unexpected token")),
+      headers: new Headers(),
+    } as Response);
+
+    await expect(
+      MeetMyAgentClient.register({
+        name: "John",
+        email: "j@example.com",
+        agentName: "Bot",
+        agentHandle: "bot",
+      })
+    ).rejects.toMatchObject({
+      name: "MeetMyAgentError",
+      status: 200,
+      code: "INVALID_RESPONSE",
+      message: "Registration response could not be parsed as JSON",
+    });
+  });
+
   it("wraps malformed JSON in MeetMyAgentError (H1)", async () => {
     // rpcResult.result.content[0].text is not valid JSON — JSON.parse throws SyntaxError.
     // The SDK must wrap it in MeetMyAgentError to keep the typed-error contract.

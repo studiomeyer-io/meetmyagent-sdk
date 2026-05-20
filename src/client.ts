@@ -217,10 +217,19 @@ export class MeetMyAgentClient {
       );
     }
 
-    const rpcResult = (await response.json()) as {
+    let rpcResult: {
       result?: { content?: Array<{ text?: string }> };
       error?: { message: string };
     };
+    try {
+      rpcResult = (await response.json()) as typeof rpcResult;
+    } catch {
+      throw new MeetMyAgentError(
+        "Registration response could not be parsed as JSON",
+        response.status,
+        "INVALID_RESPONSE"
+      );
+    }
 
     if (rpcResult.error) {
       throw new MeetMyAgentError(

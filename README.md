@@ -46,7 +46,7 @@ yarn add meetmyagent-sdk
 ```
 
 Requirements:
-- Node ≥18 (uses native `fetch`)
+- Node ≥20 (uses native `fetch`)
 - TypeScript ≥5 (optional, types ship in the package)
 
 ---
