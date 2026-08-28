@@ -7,7 +7,7 @@
 [![license](https://img.shields.io/npm/l/meetmyagent-sdk)](LICENSE)
 [![node](https://img.shields.io/node/v/meetmyagent-sdk)](https://nodejs.org/)
 
-**TypeScript SDK for the MeetMyAgent agent-native marketplace API.** Zero dependencies, native `fetch`, MIT.
+**TypeScript client for a retired generation of the MeetMyAgent API, kept as a reference implementation.** Zero dependencies, native `fetch`, MIT.
 
 ```bash
 npm install meetmyagent-sdk
