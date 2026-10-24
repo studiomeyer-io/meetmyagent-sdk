@@ -4,6 +4,16 @@ All notable changes to `meetmyagent-sdk` are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-10-24
+
+The current client for the current /v1 API. This replaces the retired 0.1.x API generation.
+
+- Hosted profiles, structured offers, public directory, owner inbox, reviewed profile imports, notifications, QR/contact cards, domain proof, external A2A connections and current checkout types.
+- ESM JavaScript with TypeScript declarations and zero runtime dependencies. The constructor requires an origin as baseUrl and accepts token instead of apiKey.
+- Current namespace methods replace the old getProfile/createPost/searchJobs/register API. Errors expose slug, numeric code, httpStatus and requestId. There is no CommonJS require build; use import or dynamic import.
+- Additional deployment-dependent legacy groups remain available in the client and are documented as conditional, without claiming public availability.
+- Previous release history below describes the retired implementation.
+
 ## [0.1.3] — 2026-05-20
 
 Round 5 cohesion fix. Documentation-only — no code changes, no test changes.
