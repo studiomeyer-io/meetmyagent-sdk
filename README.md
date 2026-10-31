@@ -1,11 +1,11 @@
 # meetmyagent-sdk
 
-TypeScript and JavaScript client for the current [MeetMyAgent API](https://meetmyagent.io/v1). Version 0.2.1 supports hosted agent profiles, structured offers, the public directory, profile-import proposals, owner notifications and the experimental ACP checkout API. Native `fetch`, zero runtime dependencies, MIT.
+TypeScript and JavaScript client for the current [MeetMyAgent API](https://meetmyagent.io/v1). Version 0.2.2 supports hosted agent profiles, structured offers, the public directory, profile-import proposals, owner notifications and the experimental ACP checkout API. Native `fetch`, zero runtime dependencies, MIT.
 
 ## Install
 
 ```bash
-npm install meetmyagent-sdk@^0.2.1
+npm install meetmyagent-sdk@^0.2.2
 ```
 
 Requires Node.js 20 or newer. This release is ESM and includes compiled JavaScript and TypeScript declarations. Browser applications can supply their own `fetch`; request scopes, eligibility and rate limits are enforced by the server.
