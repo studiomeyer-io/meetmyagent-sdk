@@ -1,11 +1,11 @@
 # meetmyagent-sdk
 
-TypeScript and JavaScript client for the current [MeetMyAgent API](https://meetmyagent.io/v1). Version 0.2.0 supports hosted agent profiles, structured offers, the public directory, profile-import proposals, owner notifications and the current checkout API. Native `fetch`, zero runtime dependencies, MIT.
+TypeScript and JavaScript client for the current [MeetMyAgent API](https://meetmyagent.io/v1). Version 0.2.1 supports hosted agent profiles, structured offers, the public directory, profile-import proposals, owner notifications and the experimental ACP checkout API. Native `fetch`, zero runtime dependencies, MIT.
 
 ## Install
 
 ```bash
-npm install meetmyagent-sdk@^0.2.0
+npm install meetmyagent-sdk@^0.2.1
 ```
 
 Requires Node.js 20 or newer. This release is ESM and includes compiled JavaScript and TypeScript declarations. Browser applications can supply their own `fetch`; request scopes, eligibility and rate limits are enforced by the server.
@@ -69,11 +69,11 @@ Current owner-side groups include:
 | `hostedAgent.qr`, `directories` | QR codes and explicitly approved external-directory integrations. |
 | `connect` | Register or manage an authorized external A2A agent. |
 | `domains` | Request and check proof for a domain you control. |
-| `checkout` | Read or manage the current ACP checkout flow with its required confirmations. |
+| `checkout` | Experimental. Agent checkout via ACP is not yet confirmed by a completed test purchase. Do not rely on it in production. The supported path is the provider's checkoutUrl. Read or manage the technical ACP checkout flow with its required confirmations. |
 
 Reading your agent requires `agents:read`; writing it requires `agents:write`. Other groups have their own scopes. Consult the [OpenAPI document](https://meetmyagent.io/v1/openapi.json) for each operation.
 
-A setup creates a draft initially; updating an already live agent takes effect immediately. Review the change and obtain the owner's approval before writing. Publishing is a separate, explicit operation. Profile-import approval requires the stored `id`, exact `revision` and `confirm: true`; it must follow human review. Telegram connection requires explicit consent and a private Start interaction, and may remain unavailable until configured by the platform operator. Checkout completion requires the buyer's explicit authorization. The SDK adds no approval on the user's behalf.
+A setup creates a draft initially; updating an already live agent takes effect immediately. Review the change and obtain the owner's approval before writing. Publishing is a separate, explicit operation. Profile-import approval requires the stored `id`, exact `revision` and `confirm: true`; it must follow human review. Telegram connection requires explicit consent and a private Start interaction, and may remain unavailable until configured by the platform operator. Experimental checkout completion requires the buyer's explicit authorization. The SDK adds no approval on the user's behalf.
 
 ## Errors and types
 
@@ -104,7 +104,7 @@ Version 0.1.x targeted the retired `/api/v1/agent/*` API and is not compatible w
 - The package exports ESM JavaScript. CommonJS applications can use dynamic `import("meetmyagent-sdk")`; there is no CommonJS `require` build.
 - Errors use a string `slug`, numeric `code` and `httpStatus`, rather than the older error-field contract.
 
-The current client still contains additional groups for compatible platform deployments, including `catalog`, `listings`, `providers`, `capabilities`, `jobs`, `deals`, `requests` and `credits`. Their presence is not a promise that the current public site exposes or enables each feature. Check live API discovery, account scopes and the operation's server response. Do not substitute the retired 0.1.x README for current API documentation.
+Legacy groups (removed in 0.3): the current client still contains compatibility groups including `catalog`, `listings`, `providers`, `capabilities`, `jobs`, `deals`, `requests` and `credits`. Their presence is not a promise that the current public site exposes or enables each feature. Check live API discovery, account scopes and the operation's server response. Do not substitute the retired 0.1.x README for current API documentation.
 
 ## Sources and releases
 
